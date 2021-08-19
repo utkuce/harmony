@@ -3,6 +3,8 @@
 #include <fmt/format.h>
 #include <sw/redis++/redis++.h>
 
+#include "util.cpp"
+
 using namespace sw::redis;
 
 int main(int, char**) {
@@ -27,21 +29,14 @@ int main(int, char**) {
         if (msg.compare("set") == 0) {
 
             auto event_id = redis.get(key);
-            if (event_id) {
-                // Dereference val to get the returned value of std::string type.
-                std::cout << key << ": " << *event_id << std::endl;
-            }   // else key doesn't exist.
+            std::cout << key << ": " << *event_id << std::endl;
         }
 
         if (msg.compare("rpush") == 0) {
 
             std::vector<std::string> values = {};
             redis.lrange(key, 0, -1, std::back_inserter(values));
-
-            std::cout << key << ": ";
-            for (auto i: values)
-                std::cout << i << ' ';
-            std::cout << std::endl;
+            std::cout << key << ": " << values << std::endl;
         }
 
     });
